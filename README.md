@@ -4,31 +4,31 @@ The **Y2Z Travel Itinerary Planner** is a responsive React application that help
 
 ---
 
-## 🌍 Overview
+##  Overview
 
 This app allows travelers to organize daily activities like sightseeing, dining, and more using drag-and-drop cards. Each day’s itinerary is shown with detailed activity cards that can be reordered smoothly.
 
 ---
 
-## ✨ Features
+##  Features
 
-- 🗓️ **Daily Itinerary Organization** – View and manage travel plans by day  
-- 🧭 **Activity Cards** – Show time, location, cost, and duration  
-- 🖱️ **Drag-and-Drop Reordering** – Smooth reordering of activities using @dnd-kit  
-- 📱 **Fully Responsive Design** – Works on all screen sizes  
-- ⚡ **Loading States** – Skeleton screens while loading  
-- ⚠️ **Error Handling** – User-friendly error messages with retry options  
-- 🎨 **Visual Feedback** – Visual indicators and overlays during drag  
-- 🏷️ **Activity Types** – Color-coded for sightseeing, dining, transport, and more  
+-  **Daily Itinerary Organization** – View and manage travel plans by day  
+-  **Activity Cards** – Show time, location, cost, and duration  
+-  **Drag-and-Drop Reordering** – Smooth reordering of activities using @dnd-kit  
+-  **Fully Responsive Design** – Works on all screen sizes  
+-  **Loading States** – Skeleton screens while loading  
+-  **Error Handling** – User-friendly error messages with retry options  
+-  **Visual Feedback** – Visual indicators and overlays during drag  
+-  **Activity Types** – Color-coded for sightseeing, dining, transport, and more  
 
 ---
 
 ## 🔗 [Live Demo](#)  
-*(y2ztravelitineraryplanner.netlify.app)*
+*(https://y2ztravelitineraryplanner.netlify.app/))*
 
 ---
 
-## 🛠️ Technologies Used
+##  Technologies Used
 
 | Tool               | Purpose                                 |
 |--------------------|-----------------------------------------|
@@ -41,7 +41,7 @@ This app allows travelers to organize daily activities like sightseeing, dining,
 
 ---
 
-## 🚀 Installation
+##  Installation
 
 ```bash
 # Clone the repository
@@ -171,11 +171,5 @@ const style = {
 
 ---
 
-## 📄 License
-
-This project is licensed under the MIT License.  
-See the [LICENSE](./LICENSE) file for details.
-
----
 
 > Made with ❤️ using React and Tailwind CSS
