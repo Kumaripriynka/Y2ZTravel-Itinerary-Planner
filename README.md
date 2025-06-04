@@ -24,7 +24,7 @@ This app allows travelers to organize daily activities like sightseeing, dining,
 ---
 
 ## 🔗 [Live Demo](#)  
-*(Add your live demo link here when deployed)*
+*(y2ztravelitineraryplanner.netlify.app)*
 
 ---
 
