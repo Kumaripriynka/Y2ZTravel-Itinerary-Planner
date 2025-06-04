@@ -56,29 +56,26 @@ const ActivityCard = ({ activity, isDragging, isOverlay = false }) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={`group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200 
-        cursor-grab active:cursor-grabbing touch-manipulation select-none
-        ${isDragging || isSortableDragging ? 'shadow-xl scale-105 rotate-1 z-40' : ''} 
-        ${isOverlay ? 'shadow-2xl z-50' : ''}
-        md:hover:scale-102 active:scale-105`}
+      className={`group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200 cursor-grab active:cursor-grabbing ${
+        isDragging || isSortableDragging ? 'shadow-xl scale-105 rotate-1' : ''
+      } ${isOverlay ? 'shadow-2xl z-50' : ''}`}
       {...attributes}
       {...listeners}
     >
       <div className="flex">
         {/* Image Section */}
-        <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0">
+        <div className="relative w-24 h-24 flex-shrink-0">
           <img 
             src={activity.image} 
             alt={activity.title}
             className="w-full h-full object-cover"
-            draggable={false}
             onError={(e) => {
               e.target.src = 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=300&h=200&fit=crop&crop=center';
             }}
           />
-          {/* Enhanced Drag Handle for Mobile */}
-          <div className="absolute top-1 left-1 opacity-60 group-hover:opacity-100 transition-opacity bg-black/30 rounded p-1 touch-manipulation">
-            <GripVertical className="w-3 h-3 text-white pointer-events-none" />
+          {/* Drag Handle Overlay */}
+          <div className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 rounded p-1">
+            <GripVertical className="w-3 h-3 text-white" />
           </div>
           
           {/* Activity Type Badge */}
@@ -90,26 +87,26 @@ const ActivityCard = ({ activity, isDragging, isOverlay = false }) => {
         </div>
 
         {/* Content Section */}
-        <div className="flex-grow p-3 sm:p-4 min-w-0">
+        <div className="flex-grow p-4">
           <div className="flex items-start justify-between mb-2">
-            <div className="flex-grow min-w-0">
-              <h4 className="font-semibold text-gray-800 text-sm sm:text-base leading-tight mb-1 truncate">
+            <div className="flex-grow">
+              <h4 className="font-semibold text-gray-800 text-base leading-tight mb-1">
                 {activity.title}
               </h4>
-              <div className="flex items-center space-x-2 sm:space-x-3 text-xs text-gray-600">
+              <div className="flex items-center space-x-3 text-xs text-gray-600">
                 <div className="flex items-center">
-                  <Clock className="w-3 h-3 mr-1 flex-shrink-0" />
-                  <span className="truncate">{activity.time}</span>
+                  <Clock className="w-3 h-3 mr-1" />
+                  <span>{activity.time}</span>
                 </div>
-                <div className="flex items-center min-w-0">
-                  <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
-                  <span className="truncate max-w-16 sm:max-w-20">{activity.location}</span>
+                <div className="flex items-center">
+                  <MapPin className="w-3 h-3 mr-1" />
+                  <span className="truncate max-w-20">{activity.location}</span>
                 </div>
               </div>
             </div>
             
             {activity.cost && (
-              <div className="flex items-center text-green-600 font-semibold text-xs sm:text-sm ml-2 flex-shrink-0">
+              <div className="flex items-center text-green-600 font-semibold text-sm ml-2">
                 <DollarSign className="w-3 h-3" />
                 <span>{activity.cost}</span>
               </div>
@@ -124,24 +121,15 @@ const ActivityCard = ({ activity, isDragging, isOverlay = false }) => {
 
           <div className="flex items-center justify-between">
             {activity.duration && (
-              <div className="text-xs text-gray-500 truncate">
+              <div className="text-xs text-gray-500">
                 Duration: {activity.duration}
               </div>
             )}
             
-            <span className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${getTypeColor(activity.type)} flex-shrink-0`}>
+            <span className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${getTypeColor(activity.type)}`}>
               {activity.type}
             </span>
           </div>
-        </div>
-      </div>
-      
-      {/* Mobile Touch Indicator */}
-      <div className="sm:hidden absolute top-2 right-2 opacity-30 pointer-events-none">
-        <div className="flex space-x-1">
-          <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-          <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-          <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
         </div>
       </div>
     </div>

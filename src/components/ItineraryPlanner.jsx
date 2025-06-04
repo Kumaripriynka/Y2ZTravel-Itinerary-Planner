@@ -1,16 +1,8 @@
+// components/ItineraryPlanner.jsx (Enhanced with Loading States)
 import React, { useState, useCallback, useEffect } from 'react';
-import { 
-  DndContext, 
-  DragOverlay, 
-  closestCenter, 
-  PointerSensor, 
-  TouchSensor, 
-  useSensor, 
-  useSensors,
-  MouseSensor 
-} from '@dnd-kit/core';
+import { DndContext, DragOverlay, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import { Calendar, MapPin, Plane, RefreshCw, Smartphone } from 'lucide-react';
+import { Calendar, MapPin, Plane, RefreshCw } from 'lucide-react';
 import DaySection from './DaySection';
 import ActivityCard from './ActivityCard';
 import LoadingSpinner, { DaySectionSkeleton, FullPageLoader } from './LoadingSpinner';
@@ -23,61 +15,20 @@ const ItineraryPlanner = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
-  const [isMobile, setIsMobile] = useState(false);
 
-  // Enhanced sensors for better mobile support
-  const mouseSensor = useSensor(MouseSensor, {
-    activationConstraint: {
-      distance: 3,
-    },
-  });
-
-  const touchSensor = useSensor(TouchSensor, {
-    activationConstraint: {
-      delay: 150, // Slightly longer delay for better touch recognition
-      tolerance: 8, // More tolerance for finger movement
-    },
-  });
-
-  const pointerSensor = useSensor(PointerSensor, {
-    activationConstraint: {
-      distance: 3,
-      delay: 100,
-    },
-  });
-
-  const sensors = useSensors(mouseSensor, touchSensor, pointerSensor);
-
-  // Detect mobile device
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // Prevent default touch behaviors that might interfere with dragging
-  useEffect(() => {
-    const preventTouch = (e) => {
-      if (activeId) {
-        e.preventDefault();
-      }
-    };
-
-    if (isMobile && activeId) {
-      document.addEventListener('touchmove', preventTouch, { passive: false });
-      document.addEventListener('touchstart', preventTouch, { passive: false });
-      
-      return () => {
-        document.removeEventListener('touchmove', preventTouch);
-        document.removeEventListener('touchstart', preventTouch);
-      };
-    }
-  }, [activeId, isMobile]);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 3,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 100,
+        tolerance: 5,
+      },
+    })
+  );
 
   // Simulate API call for loading data
   useEffect(() => {
@@ -128,11 +79,6 @@ const ItineraryPlanner = () => {
     const { active } = event;
     setActiveId(active.id);
     
-    // Add haptic feedback on mobile
-    if (isMobile && navigator.vibrate) {
-      navigator.vibrate(50);
-    }
-    
     // Find the dragged item
     if (itinerary) {
       for (const day of itinerary.days) {
@@ -143,25 +89,10 @@ const ItineraryPlanner = () => {
         }
       }
     }
-
-    // Prevent page scrolling during drag on mobile
-    if (isMobile) {
-      document.body.style.overflow = 'hidden';
-    }
-  }, [itinerary, isMobile]);
+  }, [itinerary]);
 
   const handleDragEnd = useCallback((event) => {
     const { active, over } = event;
-    
-    // Re-enable scrolling
-    if (isMobile) {
-      document.body.style.overflow = '';
-    }
-
-    // Add haptic feedback on successful drop
-    if (isMobile && navigator.vibrate && over && active.id !== over.id) {
-      navigator.vibrate(100);
-    }
     
     if (!over || active.id === over.id || !itinerary) {
       setActiveId(null);
@@ -210,17 +141,7 @@ const ItineraryPlanner = () => {
     
     setActiveId(null);
     setDraggedItem(null);
-  }, [itinerary, isMobile]);
-
-  const handleDragCancel = useCallback(() => {
-    // Re-enable scrolling on cancel
-    if (isMobile) {
-      document.body.style.overflow = '';
-    }
-    
-    setActiveId(null);
-    setDraggedItem(null);
-  }, [isMobile]);
+  }, [itinerary]);
 
   const handleRetry = () => {
     setError(null);
@@ -271,32 +192,21 @@ const ItineraryPlanner = () => {
   }
 
   return (
-    <div className="min-h-screen py-4 sm:py-8 px-2 sm:px-4 bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
+        <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-4">
-            <Plane className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600 mr-2 sm:mr-3" />
-            <h1 className="text-2xl sm:text-4xl font-bold text-gray-800">Y2Z Travel</h1>
+            <Plane className="w-8 h-8 text-blue-600 mr-3" />
+            <h1 className="text-4xl font-bold text-gray-800">Y2Z Travel</h1>
           </div>
-          <h2 className="text-lg sm:text-2xl font-semibold text-gray-700 mb-2">
+          <h2 className="text-2xl font-semibold text-gray-700 mb-2">
             {itinerary.destination}
           </h2>
           <div className="flex items-center justify-center text-gray-600">
-            <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-            <span className="text-sm sm:text-base">{itinerary.dateRange}</span>
+            <Calendar className="w-5 h-5 mr-2" />
+            <span>{itinerary.dateRange}</span>
           </div>
-          
-          {/* Mobile Instructions */}
-          {isMobile && (
-            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
-              <div className="flex items-center justify-center mb-1">
-                <Smartphone className="w-4 h-4 mr-2" />
-                <span className="font-medium">Touch & Hold to Drag</span>
-              </div>
-              <p className="text-xs">Press and hold any activity card to reorder your itinerary</p>
-            </div>
-          )}
           
           {/* Save indicator */}
           {isSaving && (
@@ -312,9 +222,8 @@ const ItineraryPlanner = () => {
           collisionDetection={closestCenter}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
-          onDragCancel={handleDragCancel}
         >
-          <div className="space-y-4 sm:space-y-8">
+          <div className="space-y-8">
             {itinerary.days.map((day) => (
               <SortableContext
                 key={day.id}
@@ -326,30 +235,21 @@ const ItineraryPlanner = () => {
             ))}
           </div>
           
-          <DragOverlay 
-            style={{
-              transformOrigin: '0 0',
-            }}
-          >
+          <DragOverlay>
             {activeId && draggedItem ? (
-              <div className="rotate-3 scale-105">
-                <ActivityCard 
-                  activity={draggedItem} 
-                  isDragging={true}
-                  isOverlay={true}
-                />
-              </div>
+              <ActivityCard 
+                activity={draggedItem} 
+                isDragging={true}
+                isOverlay={true}
+              />
             ) : null}
           </DragOverlay>
         </DndContext>
 
         {/* Footer */}
-        <div className="text-center mt-8 sm:mt-12 py-6 sm:py-8 border-t border-gray-200">
-          <p className="text-gray-500 text-xs sm:text-sm">
-            {isMobile 
-              ? "Touch and hold activities to reorder your itinerary" 
-              : "Drag and drop activities to reorder your itinerary"
-            }
+        <div className="text-center mt-12 py-8 border-t border-gray-200">
+          <p className="text-gray-500 text-sm">
+            Drag and drop activities to reorder your itinerary
           </p>
         </div>
       </div>
